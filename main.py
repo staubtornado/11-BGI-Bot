@@ -8,7 +8,7 @@ import dotenv
 from discord import colour
 from discord.ext import commands, tasks
 
-version = 'a-0.0.1'
+version = 'a-0.0.3'
 
 config = configparser.ConfigParser()
 config.read('settings.cfg')
