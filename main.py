@@ -13,9 +13,7 @@ version = 'a-0.0.1'
 config = configparser.ConfigParser()
 config.read('settings.cfg')
 
-bot = commands.Bot(command_prefix = '/', owner_id = int(config.get('OWNER_SETTIGNS', 'owner_id'), base = 10), intents = discord.Intents.all()
-#, help_command = None
-)
+bot = commands.Bot(command_prefix = '/', owner_id = int(config.get('OWNER_SETTIGNS', 'owner_id'), base = 10), intents = discord.Intents.all())
 
 dotenv.load_dotenv()
 for filename in os.listdir('./cogs'):
