@@ -4,7 +4,7 @@ from discord.ext import commands
 import configparser
 
 kurswahl_reaction_message_id = 886181942544982087
-gamewahl_reaction_message_id = 886297996457820191
+gamewahl_reaction_message_id = 886306275422519356
 
 config = configparser.ConfigParser()
 config.read('settings.cfg')
