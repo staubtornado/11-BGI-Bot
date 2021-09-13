@@ -13,7 +13,7 @@ version = 'a-0.0.3'
 config = configparser.ConfigParser()
 config.read('settings.cfg')
 
-bot = commands.Bot(command_prefix = '/', owner_id = int(config.get('OWNER_SETTIGNS', 'owner_id'), base = 10), intents = discord.Intents.all())
+bot = commands.Bot(command_prefix = config.get('BOT_SETTIGNS', 'prefix'), owner_id = int(config.get('OWNER_SETTIGNS', 'owner_id'), base = 10), intents = discord.Intents.all())
 
 dotenv.load_dotenv()
 for filename in os.listdir('./cogs'):
@@ -76,7 +76,7 @@ async def on_command_error(ctx, error):
                 return
             else:
                 try:
-                    await ctx.send(embed = discord.Embed(title = 'Cooldown...', description = f'Der Command kann erst in {round(error.retry_after, 2)} Sekunden wieder ausgeführt werden.', colour = int(config.get('COLOUR_SETTINGS', 'error'), base = 16)) .set_footer(text = f'Verursacht durch {ctx.author} | Du kannst diese Nachricht erst nach dem Cooldown wiedersehen.'))
+                    await ctx.send(embed = discord.Embed(title = 'Cooldown...', description = f'Der Befehl kann erst in {round(error.retry_after, 2)} Sekunden wieder ausgeführt werden.', colour = int(config.get('COLOUR_SETTINGS', 'error'), base = 16)) .set_footer(text = f'Verursacht durch {ctx.author} | Du kannst diese Nachricht erst nach dem Cooldown wiedersehen.'))
                 except discord.Forbidden:
                     return
                 else:
