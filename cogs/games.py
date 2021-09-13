@@ -119,7 +119,7 @@ class games(commands.Cog):
         if ctx.invoked_subcommand is None:
             with open("antonio.json", "r") as f:
                 file = json.load(f)
-            
+
             d0 = datetime.datetime(2021, 8, 30)
             d1 = datetime.datetime.now()
             delta = d1 - d0
@@ -142,8 +142,9 @@ class games(commands.Cog):
                 ) 
 
     @function_antonio.command(name = 'add')
-    async def function_antonio_add(self, ctx, verspätung: int):
-        with open("antonio.json", "r") as f:
+    async def function_antonio_add(ctx, verspätung):
+        print(ctx.message.content)
+        with open("antonio.json", "r") as f: 
             file = json.load(f)
         
             file['verspaetungen'].append(verspätung)
@@ -153,7 +154,7 @@ class games(commands.Cog):
         return await ctx.message.add_reaction('✅')
 
     @function_antonio.command(name = 'testheft')
-    async def function_antonio_add(self, ctx):
+    async def function_antonio_add(ctx):
         with open("antonio.json", "r") as f:
             file = json.load(f)
         
