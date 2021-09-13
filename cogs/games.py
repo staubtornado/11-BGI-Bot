@@ -142,7 +142,7 @@ class games(commands.Cog):
                 ) 
 
     @function_antonio.command(name = 'add')
-    async def function_antonio_add(ctx, verspätung):
+    async def function_antonio_add(ctx, verspätung: int):
         print(ctx.message.content)
         with open("antonio.json", "r") as f: 
             file = json.load(f)
