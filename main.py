@@ -5,7 +5,7 @@ import os
 
 import discord
 import dotenv
-from discord import colour
+from discord.embeds import Embed
 from discord.ext import commands, tasks
 
 version = 'a-0.0.3'
@@ -13,7 +13,7 @@ version = 'a-0.0.3'
 config = configparser.ConfigParser()
 config.read('settings.cfg')
 
-bot = commands.Bot(command_prefix = config.get('BOT_SETTIGNS', 'prefix'), owner_id = int(config.get('OWNER_SETTIGNS', 'owner_id'), base = 10), intents = discord.Intents.all())
+bot = commands.Bot(command_prefix = config.get('BOT_SETTINGS', 'prefix'), owner_id = int(config.get('OWNER_SETTIGNS', 'owner_id'), base = 10), intents = discord.Intents.all())
 
 dotenv.load_dotenv()
 for filename in os.listdir('./cogs'):
@@ -57,19 +57,28 @@ async def reload(ctx, extension):
         bot.unload_extension(f'cogs.{extension}')
         bot.load_extension(f'cogs.{extension}')
         await ctx.message.add_reaction('✅')
-    except commands.ExtensionNotLoaded:
-        await ctx.message.add_reaction('❌')
     except commands.ExtensionNotFound:
         await ctx.message.add_reaction('❓')
+    except commands.ExtensionNotLoaded:
+        await ctx.message.add_reaction('❌')
     else:
         await ctx.message.add_reaction('✅')
+
+# @bot.group(name = 'code', pass_context = True)
+# async def code(ctx):
+#     if ctx.invoked_subcommand is None:
+#         return await ctx.send(embed = Embed(title = 'Fehler', description = f'Wir konnten keine Befehle mit dem Namen code finden. Nutze `{ctx.prefix}help` für Hilfe.', colour = int(config.get('COLOUR_SETTINGS', 'error'), base = 16)))
+
+# @code.command(name = 'exec')
+# async def code_add(ctx, code: str):
+#     exec(code)
 
 CommandOnCooldown_check = []
 CommandNotFound_check = []
 Else_check = []
 
 @bot.event
-async def on_command_error(ctx, error):
+async def on_command_error(ctx, error):    
     try:
         if isinstance(error, commands.CommandOnCooldown):
             if ctx.author.id in CommandOnCooldown_check:
@@ -114,7 +123,7 @@ async def on_command_error(ctx, error):
                     return
                 else:
                     CommandNotFound_check.append(ctx.author.id)
-                    await asyncio.sleep(10)
+                    await asyncio.sleep(5)
                     CommandNotFound_check.remove(ctx.author.id)
                     return
 
@@ -128,7 +137,7 @@ async def on_command_error(ctx, error):
                     return
                 else:
                     Else_check.append(ctx.author.id)
-                    await asyncio.sleep(10)
+                    await asyncio.sleep(5)
                     Else_check.remove(ctx.author.id)
                     return
 
