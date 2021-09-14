@@ -13,7 +13,8 @@ import git
 import shutil
 import sys
 
-version = 'a-0.0.3'
+version = configparser.ConfigParser()
+version.read('version.cfg')
 
 config = configparser.ConfigParser()
 config.read('settings.cfg')
@@ -24,7 +25,7 @@ github = Github(os.environ['GITHUB_API_TOKEN'])
 
 @tasks.loop(minutes = 30)
 async def github_update_check():
-    if config.get('BOT_SETTINGS', 'latest_commit') == str(github.get_repo('Staubtornado/11-BGI-Bot').pushed_at):
+    if version.get('BOT_VERSION', 'latest_commit') == str(github.get_repo('Staubtornado/11-BGI-Bot').pushed_at):
         return
     else:
         print('Update found. Preparing update to the newest version...\nClearing content of update folder...')
@@ -50,10 +51,10 @@ async def github_update_check():
                     os.remove(dst_file)
                 shutil.move(src_file, dst_dir)
 
-        config.set('BOT_SETTINGS', 'latest_commit', str(github.get_repo('Staubtornado/11-BGI-Bot').pushed_at))
+        version.set('BOT_VERSION', 'latest_commit', str(github.get_repo('Staubtornado/11-BGI-Bot').pushed_at))
 
-        with open('settings.cfg', 'w') as conf:
-            config.write(conf)
+        with open('version.cfg', 'w') as conf:
+            version.write(conf)
 
         os.startfile('./', 'main.py')
     	sys.exit()
