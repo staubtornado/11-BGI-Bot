@@ -2,20 +2,64 @@ import asyncio
 import configparser
 import difflib
 import os
+from re import M
 
 import discord
 import dotenv
 from discord.embeds import Embed
 from discord.ext import commands, tasks
+from github import Github
+import git
+import shutil
+import sys
 
 version = 'a-0.0.3'
 
 config = configparser.ConfigParser()
 config.read('settings.cfg')
+dotenv.load_dotenv()
 
 bot = commands.Bot(command_prefix = config.get('BOT_SETTINGS', 'prefix'), owner_id = int(config.get('OWNER_SETTIGNS', 'owner_id'), base = 10), intents = discord.Intents.all())
+github = Github(os.environ['GITHUB_API_TOKEN'])
 
-dotenv.load_dotenv()
+@tasks.loop(minutes = 30)
+async def github_update_check():
+    if config.get('BOT_SETTINGS', 'latest_commit') == str(github.get_repo('Staubtornado/11-BGI-Bot').pushed_at):
+        return
+    else:
+        print('Update found. Preparing update to the newest version...\nClearing content of update folder...')
+        shutil.rmtree('./update/11-BGI-Bot')
+        
+        print('Downloading the newest update...')
+        git.Git("./update").clone("https://github.com/Staubtornado/11-BGI-Bot.git")
+        print('Update downloaded. Applying changes...')
+        
+        root_src_dir = './update/11-BGI-Bot\\'
+        root_dst_dir = './\\'
+
+        for src_dir, dirs, files in os.walk(root_src_dir):
+            dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
+            if not os.path.exists(dst_dir):
+                os.makedirs(dst_dir)
+            for file_ in files:
+                src_file = os.path.join(src_dir, file_)
+                dst_file = os.path.join(dst_dir, file_)
+                if os.path.exists(dst_file):
+                    if os.path.samefile(src_file, dst_file):
+                        continue
+                    os.remove(dst_file)
+                shutil.move(src_file, dst_dir)
+
+        config.set('BOT_SETTINGS', 'latest_commit', str(github.get_repo('Staubtornado/11-BGI-Bot').pushed_at))
+
+        with open('settings.cfg', 'w') as conf:
+            config.write(conf)
+
+        os.startfile('./', 'main.py')
+    	sys.exit()
+
+github_update_check.start()
+
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         bot.load_extension(f'cogs.{filename[:-3]}')
@@ -63,15 +107,6 @@ async def reload(ctx, extension):
         await ctx.message.add_reaction('❌')
     else:
         await ctx.message.add_reaction('✅')
-
-# @bot.group(name = 'code', pass_context = True)
-# async def code(ctx):
-#     if ctx.invoked_subcommand is None:
-#         return await ctx.send(embed = Embed(title = 'Fehler', description = f'Wir konnten keine Befehle mit dem Namen code finden. Nutze `{ctx.prefix}help` für Hilfe.', colour = int(config.get('COLOUR_SETTINGS', 'error'), base = 16)))
-
-# @code.command(name = 'exec')
-# async def code_add(ctx, code: str):
-#     exec(code)
 
 CommandOnCooldown_check = []
 CommandNotFound_check = []
