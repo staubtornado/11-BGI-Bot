@@ -20,12 +20,12 @@ class games(commands.Cog):
 
     @commands.command(name = 'tictactoe')
     async def function_tictactoe(self, ctx, enemy: discord.Member):
-        field_0 = field_1 = field_2 = field_3 = field_4 = field_5 = field_6 = field_7 = field_8 = None
+        field_0 = field_1 = field_2 = field_3 = field_4 = field_5 = field_6 = field_7 = field_8 = ':grey_question:'
 
         player_O = ctx.author
         player_X = enemy
         
-        message = await ctx.send(embed = Embed(title = 'Tic Tac Toe', description = f'{player_O.mention} ist am Zug.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
+        message = await ctx.send(embed = Embed(title = 'Tic Tac Toe', description = f'{player_O.mention} ist am Zug.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
 
         reactions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
         for reaction in reactions:
@@ -47,7 +47,7 @@ class games(commands.Cog):
                 reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
             
             except asyncio.TimeoutError:
-                    return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat nicht innerhalb von 60 Sekunden seinen Zug getätigt. Das Spiel ist beendet.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
+                    return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat nicht innerhalb von 60 Sekunden seinen Zug getätigt. Das Spiel ist beendet.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
 
             else:
                 if user == turn and reaction.message == message and str(reaction.emoji) in reactions:
@@ -56,9 +56,9 @@ class games(commands.Cog):
                     await message.remove_reaction(str(reaction.emoji), self.bot.user)
                     
                     if turn == player_O:
-                        X_OR_O = 'O'
+                        X_OR_O = ':o:'
                     else:
-                        X_OR_O = 'X'
+                        X_OR_O = ':regional_indicator_x:'
                     
                     if str(reaction.emoji) == '1️⃣':
                         field_0 = X_OR_O
@@ -79,27 +79,27 @@ class games(commands.Cog):
                     elif str(reaction.emoji) == '9️⃣':
                         field_8 = X_OR_O
 
-                    if field_0 == field_1 == field_2 and field_0 != None:
-                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
-                    elif field_3 == field_4 == field_5 and field_3 != None:
-                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
-                    elif field_6 == field_7 == field_8 and field_6 != None:
-                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
-                    elif field_0 == field_3 == field_6 and field_0 != None:
-                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
-                    elif field_1 == field_4 == field_7 and field_1 != None:
-                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
-                    elif field_2 == field_5 == field_8 and field_2 != None:
-                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
-                    elif field_0 == field_4 == field_8 and field_0 != None:
-                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
-                    elif field_2 == field_4 == field_6 and field_2 != None:
-                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
+                    if field_0 == field_1 == field_2 and field_0 != ':grey_question:':
+                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
+                    elif field_3 == field_4 == field_5 and field_3 != ':grey_question:':
+                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
+                    elif field_6 == field_7 == field_8 and field_6 != ':grey_question:':
+                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
+                    elif field_0 == field_3 == field_6 and field_0 != ':grey_question:':
+                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
+                    elif field_1 == field_4 == field_7 and field_1 != ':grey_question:':
+                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
+                    elif field_2 == field_5 == field_8 and field_2 != ':grey_question:':
+                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
+                    elif field_0 == field_4 == field_8 and field_0 != ':grey_question:':
+                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
+                    elif field_2 == field_4 == field_6 and field_2 != ':grey_question:':
+                        return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{turn.mention} hat gewonnen!', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
                     else:
-                        await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{next_player.mention} ist am Zug.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
+                        await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'{next_player.mention} ist am Zug.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
 
         else:
-             return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'Unentschieden, da keine Felder mehr verfügbar sind.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
+             return await message.edit(embed = Embed(title = 'Tic Tac Toe', description = f'Unentschieden, da keine Felder mehr verfügbar sind.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)) .add_field(name = 'Spieler O', value = player_O.mention, inline=True) .add_field(name = 'Spieler X', value = player_X.mention, inline=True) .add_field(name = 'Spielfeld', value = f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}', inline=False))
   
     @commands.command(name = 'biobuch')
     async def function_biobuch(self, ctx):
@@ -139,7 +139,7 @@ class games(commands.Cog):
                 .add_field(name = '⠀', value = '⠀', inline=False)
                 .add_field(name = 'Testheft vergessen', value = file['testheft_vergessen'])
                 .add_field(name = 'Hausaufgaben vergessen', value = file['hausaufgaben_vergessen'])
-                ) 
+                )
 
     @function_antonio.command(name = 'add')
     async def function_antonio_add(ctx, verspätung: int):
