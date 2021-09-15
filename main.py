@@ -29,11 +29,12 @@ async def github_update_check():
         return
     else:
         print('Update found. Preparing update to the newest version...\nClearing content of update folder...')
-        shutil.rmtree('./update/11-BGI-Bot\\')
+        shutil.rmtree('./update\\11-BGI-Bot\\')
         
         print('Downloading the newest update...')
         git.Git("./update").clone("https://github.com/Staubtornado/11-BGI-Bot.git")
         print('Update downloaded. Applying changes...')
+        shutil.rmtree('./update\\11-BGI-Bot\\.git')
         
         root_src_dir = './update/11-BGI-Bot\\'
         root_dst_dir = './\\'
