@@ -12,6 +12,7 @@ from github import Github
 import git
 import shutil
 import sys
+import stat
 
 version = configparser.ConfigParser()
 version.read('version.cfg')
@@ -29,12 +30,16 @@ async def github_update_check():
         return
     else:
         print('Update found. Preparing update to the newest version...\nClearing content of update folder...')
-        shutil.rmtree('./update\\11-BGI-Bot\\')
+        
+        def on_rm_error(func, path, exc_info):
+            os.chmod(path, stat.S_IWRITE)
+            os.unlink(path)
+        shutil.rmtree('./update\\11-BGI-Bot\\', onerror = on_rm_error)
         
         print('Downloading the newest update...')
         git.Git("./update").clone("https://github.com/Staubtornado/11-BGI-Bot.git")
         print('Update downloaded. Applying changes...')
-        shutil.rmtree('./update\\11-BGI-Bot\\.git')
+        shutil.rmtree('./update\\11-BGI-Bot\\.git', onerror = on_rm_error)
         
         root_src_dir = './update/11-BGI-Bot\\'
         root_dst_dir = './\\'
@@ -57,9 +62,9 @@ async def github_update_check():
         with open('version.cfg', 'w') as conf:
             version.write(conf)
 
+        print('Update successful. Restarting script...')
         os.startfile('./', 'main.py')
-    	sys.exit()
-
+        sys.exit()
 github_update_check.start()
 
 for filename in os.listdir('./cogs'):
@@ -68,7 +73,7 @@ for filename in os.listdir('./cogs'):
 
 @bot.event
 async def on_ready():
-    print('Bot online...')
+    print(f'Bot running with the latest update, published on {version.get("BOT_VERSION", "latest_commit")}.')
 
 @bot.command(name='load')
 @commands.is_owner()
