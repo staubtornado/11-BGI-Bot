@@ -19,7 +19,7 @@ class rich_presence(commands.Cog):
     @tasks.loop(seconds = 20)
     async def rich_presence_update(self):
         await self.bot.wait_until_ready()
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,name=f'/help | version: {version.get("BOT_VERSION", "latest_commit")}'))
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,name=f'{config.get("BOT_SETTINGS", "prefix")}help | version: {version.get("BOT_VERSION", "latest_commit")}'))
 
 def setup(bot):
     bot.add_cog(rich_presence(bot))
