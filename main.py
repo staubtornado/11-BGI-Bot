@@ -77,7 +77,7 @@ async def github_update_check():
             version.write(conf)
 
         print('Update successful. Restarting script...')
-        os.system(f'python{str(sys.version)[:1]} {__file__}')  
+        os.system(f'python3.9 {__file__}')  
         time.sleep(0.2)
         exit()
 github_update_check.start()
