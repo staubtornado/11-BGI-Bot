@@ -41,12 +41,12 @@ async def github_update_check():
         return
     else:
         print('Update found. Preparing update to the newest version...\nClearing content of update folder...')
-        
+
         def on_rm_error(func, path, exc_info):
             print(f'{func}{path} {exc_info}')
             os.chmod(path, stat.S_IWRITE)
             os.unlink(path)
-        shutil.rmtree(f'{os.sep}update{os.sep}11-BGI-Bot{os.sep}', onerror = on_rm_error)
+        shutil.rmtree(f'{os.getcwd()}{os.sep}update{os.sep}11-BGI-Bot{os.sep}', onerror = on_rm_error)
         
         print('Downloading the newest update...')
         git.Git(f"{os.getcwd()}{os.sep}update").clone("https://github.com/Staubtornado/11-BGI-Bot.git")
