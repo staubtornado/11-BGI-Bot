@@ -88,7 +88,7 @@ for filename in os.listdir('./cogs'):
 async def on_ready():
     print(f'Bot running with the latest update, published on {version.get("BOT_VERSION", "latest_commit")}')
 
-@bot.command(name='haha')
+@bot.command(name='hahaa')
 async def haha(ctx):
     return await ctx.send('Haha')
 
