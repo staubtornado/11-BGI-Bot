@@ -26,7 +26,7 @@ async def get_stundenplan():
         .set_footer(text = 'Angaben ohne Gewähr') 
         .set_image(url = 'https://media.discordapp.net/attachments/883364257364844615/883364663394451556/unknown.png'))
 
-class stundenplan(commands.Cog):
+class Schule(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.stundenplan_update_task.start()
@@ -49,4 +49,4 @@ class stundenplan(commands.Cog):
         return await ctx.send(embed = await(get_stundenplan()))
 
 def setup(bot):
-    bot.add_cog(stundenplan(bot))
+    bot.add_cog(Schule(bot))
