@@ -76,8 +76,7 @@ async def github_update_check():
             version.write(conf)
 
         print('Update successful. Restarting script...')
-        opener = "open" if sys.platform == "darwin" else "xdg-open"
-        subprocess.call([opener, "main.py"])
+        os.startfile('main.py')
         sys.exit()
 github_update_check.start()
 
