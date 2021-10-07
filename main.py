@@ -2,7 +2,6 @@ import asyncio
 import configparser
 import difflib
 import os
-from re import M
 
 import discord
 import dotenv
@@ -21,7 +20,19 @@ config = configparser.ConfigParser()
 config.read('settings.cfg')
 dotenv.load_dotenv()
 
-bot = commands.Bot(command_prefix = config.get('BOT_SETTINGS', 'prefix'), owner_id = int(config.get('OWNER_SETTIGNS', 'owner_id'), base = 10), intents = discord.Intents.all())
+class MyHelpCommand(commands.MinimalHelpCommand):
+    async def send_bot_help(self, mapping):
+        embed = Embed(title="Hilfe")
+        for cog, commands in mapping.items():
+           command_signatures = [self.get_command_signature(c) for c in commands]
+           if command_signatures:
+                cog_name = getattr(cog, "qualified_name", "No Category")
+                embed.add_field(name=cog_name, value="\n".join(command_signatures), inline=False)
+
+        channel = self.get_destination()
+        await channel.send(embed=embed)
+
+bot = commands.Bot(command_prefix = config.get('BOT_SETTINGS', 'prefix'), owner_id = int(config.get('OWNER_SETTIGNS', 'owner_id'), base = 10), intents = discord.Intents.all(), help_command = MyHelpCommand())
 github = Github(os.environ['GITHUB_API_TOKEN'])
 
 @tasks.loop(minutes = 30)
@@ -32,17 +43,18 @@ async def github_update_check():
         print('Update found. Preparing update to the newest version...\nClearing content of update folder...')
         
         def on_rm_error(func, path, exc_info):
+            print(f'{func}{path} {exc_info}')
             os.chmod(path, stat.S_IWRITE)
             os.unlink(path)
-        shutil.rmtree('./update\\11-BGI-Bot\\', onerror = on_rm_error)
+        shutil.rmtree(f'{os.sep}update{os.sep}11-BGI-Bot{os.sep}', onerror = on_rm_error)
         
         print('Downloading the newest update...')
-        git.Git("./update").clone("https://github.com/Staubtornado/11-BGI-Bot.git")
+        git.Git(f"{os.getcwd()}{os.sep}update").clone("https://github.com/Staubtornado/11-BGI-Bot.git")
         print('Update downloaded. Applying changes...')
-        shutil.rmtree('./update\\11-BGI-Bot\\.git', onerror = on_rm_error)
+        shutil.rmtree(f'{os.getcwd()}{os.sep}update{os.sep}11-BGI-Bot{os.sep}.git', onerror = on_rm_error)
         
-        root_src_dir = './update/11-BGI-Bot\\'
-        root_dst_dir = './\\'
+        root_src_dir = f'{os.getcwd()}{os.sep}update{os.sep}11-BGI-Bot{os.sep}'
+        root_dst_dir = os.getcwd()
 
         for src_dir, dirs, files in os.walk(root_src_dir):
             dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
@@ -63,7 +75,7 @@ async def github_update_check():
             version.write(conf)
 
         print('Update successful. Restarting script...')
-        os.startfile('./', 'main.py')
+        os.startfile(__file__)
         sys.exit()
 github_update_check.start()
 
@@ -73,7 +85,7 @@ for filename in os.listdir('./cogs'):
 
 @bot.event
 async def on_ready():
-    print(f'Bot running with the latest update, published on {version.get("BOT_VERSION", "latest_commit")}.')
+    print(f'Bot running with the latest update, published on {version.get("BOT_VERSION", "latest_commit")}')
 
 @bot.command(name='load')
 @commands.is_owner()
@@ -185,5 +197,8 @@ async def on_command_error(ctx, error):
 
     except Exception as err:
         return await ctx.send(embed = discord.Embed(title = 'Schwerwiegender Fehler', description = f'Ein schwerwiegender Fehler ist im Error-Handler ausgetreten. Fehlercode:\n`{error, err}`', colour = int(config.get('COLOUR_SETTINGS', 'error'), base = 16)))
+
+print('getcwd:      ', os.getcwd())
+print('__file__:    ', __file__)
 
 bot.run(os.environ['DISCORD_BOT_TOKEN'])
