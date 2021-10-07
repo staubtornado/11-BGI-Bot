@@ -2,16 +2,17 @@ import asyncio
 import configparser
 import difflib
 import os
+import shutil
+import stat
+import subprocess
+import sys
 
 import discord
 import dotenv
+import git
 from discord.embeds import Embed
 from discord.ext import commands, tasks
 from github import Github
-import git
-import shutil
-import sys
-import stat
 
 version = configparser.ConfigParser()
 version.read('version.cfg')
@@ -75,7 +76,8 @@ async def github_update_check():
             version.write(conf)
 
         print('Update successful. Restarting script...')
-        os.startfile(__file__)
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, "main.py"])
         sys.exit()
 github_update_check.start()
 
