@@ -76,7 +76,7 @@ async def github_update_check():
             version.write(conf)
 
         print('Update successful. Restarting script...')
-        os.startfile('main.py')
+        os.execv(sys.executable, ['python'] + sys.argv)
         sys.exit()
 github_update_check.start()
 
