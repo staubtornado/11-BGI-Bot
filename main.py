@@ -79,7 +79,7 @@ async def github_update_check():
         print('Update successful. Restarting script...')
         os.system(f'python{str(sys.version)[:-1]} {__file__}')  
         time.sleep(0.2)
-        quit()
+        exit()
 github_update_check.start()
 
 for filename in os.listdir('./cogs'):
