@@ -77,20 +77,8 @@ async def github_update_check():
             version.write(conf)
         #{str(sys.version)[:1]
         print('Update successful. Restarting script...')
-        try:
-            os.execv(f'{os.getcwd}{os.sep}{__file__}', [''])
-        except Exception as e:
-            print(f'Failed to restart the script, trying again... ERROR: {e}')
-
-            try:
-                os.open('main.py', flags = os.O_RDWR|os.O_RDONLY)
-            except Exception as e:
-                print(f'Failed to restart the script, trying again... ERROR: {e}')
-
-                try:
-                    os.startfile(__file__)
-                except Exception as e:
-                    print(f'Failed to restart the script... ERROR: {e}')
+        os.open('main.py', flags=os.O_RDONLY)
+        time.sleep(0.2)
         exit()
 github_update_check.start()
 
@@ -101,6 +89,10 @@ for filename in os.listdir('./cogs'):
 @bot.event
 async def on_ready():
     print(f'Bot running with the latest update, published on {version.get("BOT_VERSION", "latest_commit")}')
+
+@bot.command(name='hahaa')
+async def haha(ctx):
+    return await ctx.send('Haha')
 
 @bot.command(name='load')
 @commands.is_owner()
