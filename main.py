@@ -76,11 +76,11 @@ async def github_update_check():
         with open('version.cfg', 'w') as conf:
             version.write(conf)
         #{str(sys.version)[:1]
-        print('Update successful. Restarting script...')
-        os.open('main.py', flags=os.O_RDONLY)
+        print('Update successful. The script has to be restarted manually...')
+        #os.open('main.py', flags=os.O_RDONLY)
         time.sleep(0.2)
         exit()
-github_update_check.start()
+#github_update_check.start()
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
