@@ -1,7 +1,11 @@
+import configparser
+import platform
+
 import discord
+import psutil
 from discord.embeds import Embed
 from discord.ext import commands
-import configparser
+from discord.ext.commands.cooldowns import BucketType
 
 kurswahl_reaction_message_id = 886181942544982087
 gamewahl_reaction_message_id = 886306275422519356
@@ -9,9 +13,24 @@ gamewahl_reaction_message_id = 886306275422519356
 config = configparser.ConfigParser()
 config.read('settings.cfg')
 
-class reaction_roles(commands.Cog):
+class System(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command(name='systeminfo')
+    @commands.cooldown(2, 5, type=BucketType.default)
+    async def systeminfo(self, ctx):
+
+        embed = Embed(title = 'System Informationen', description = 'Informationen über die Hardware, auf dem der Bot läuft.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16))
+
+        embed.add_field(name='Python Version', value=platform.python_version(), inline=True)
+        embed.add_field(name='discord.py Version', value=discord.__version__, inline=True)
+        embed.add_field(name='System', value=platform.system(), inline=True)
+        embed.add_field(name='Release / Version', value=f'{platform.release()} / {platform.version()}', inline=True)
+        embed.add_field(name='Processor', value=platform.processor(), inline=True)
+        embed.add_field(name='RAM', value=f'{round(psutil.virtual_memory().used / (1024.0 ** 3), 2)}GB / {round(psutil.virtual_memory().total / (1024.0 ** 3), 2)}GB', inline=True)
+        return await ctx.send(embed = embed)
+
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -114,4 +133,4 @@ class reaction_roles(commands.Cog):
             await message.add_reaction(reaction)
 
 def setup(bot):
-    bot.add_cog(reaction_roles(bot))
+    bot.add_cog(System(bot))
