@@ -165,7 +165,8 @@ async def on_command_error(ctx, error):
                                                        description=f'Der Befehl kann erst in {round(error.retry_after, 2)} Sekunden wieder ausgeführt werden.',
                                                        colour=int(config.get('COLOUR_SETTINGS', 'error'),
                                                                   base=16)).set_footer(
-                        text=f'Verursacht durch {ctx.author} | Du kannst diese Nachricht erst nach dem Cooldown wiedersehen.'))
+                        text=f'Verursacht durch {ctx.author} | Du kannst diese Nachricht erst nach dem Cooldown '
+                             f'wiedersehen.'))
                 except discord.Forbidden:
                     return
                 else:
