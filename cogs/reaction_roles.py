@@ -13,6 +13,7 @@ gamewahl_reaction_message_id = 886306275422519356
 config = configparser.ConfigParser()
 config.read('settings.cfg')
 
+
 class System(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -21,16 +22,19 @@ class System(commands.Cog):
     @commands.cooldown(2, 5, type=BucketType.default)
     async def systeminfo(self, ctx):
 
-        embed = Embed(title = 'System Informationen', description = 'Informationen über die Hardware, auf dem der Bot läuft.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16))
+        embed = Embed(title='System Informationen',
+                      description='Informationen über die Hardware, auf dem der Bot läuft.',
+                      colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16))
 
         embed.add_field(name='Python Version', value=platform.python_version(), inline=True)
         embed.add_field(name='discord.py Version', value=discord.__version__, inline=True)
         embed.add_field(name='System', value=platform.system(), inline=True)
         embed.add_field(name='Release / Version', value=f'{platform.release()} / {platform.version()}', inline=True)
         embed.add_field(name='Processor', value=platform.processor(), inline=True)
-        embed.add_field(name='RAM', value=f'{round(psutil.virtual_memory().used / (1024.0 ** 3), 2)}GB / {round(psutil.virtual_memory().total / (1024.0 ** 3), 2)}GB', inline=True)
-        return await ctx.send(embed = embed)
-
+        embed.add_field(name='RAM',
+                        value=f'{round(psutil.virtual_memory().used / (1024.0 ** 3), 2)}GB / {round(psutil.virtual_memory().total / (1024.0 ** 3), 2)}GB',
+                        inline=True)
+        return await ctx.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -107,30 +111,37 @@ class System(commands.Cog):
                 role_id = 884827504559398962
                 role = discord.utils.get(guild.roles, id=role_id)
                 return await member.remove_roles(role)
-    
-    @commands.command(name = 'kurswahl', description = 'Ein Befehl, der es Nutzern erlaubt, sich auf dem Discordserver in Kurse einzuwählen.')
+
+    @commands.command(name='kurswahl',
+                      description='Ein Befehl, der es Nutzern erlaubt, sich auf dem Discordserver in Kurse einzuwählen.')
     async def function_kurswahl(self, ctx):
-        message = await ctx.send(embed = discord.Embed(title = 'Kursauswahl', description = 'Erhalte Zugriff auf kursspezifische Channel.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16))
-        .add_field(name = 'Spanisch', value = '🇪🇸')
-        .add_field(name = 'Ev. Religion', value = '⛪')
-        .add_field(name = 'Kt. Religion', value = '✝️')
-        .add_field(name = 'Ethik', value = '☁️')
-        )
+        message = await ctx.send(
+            embed=discord.Embed(title='Kursauswahl', description='Erhalte Zugriff auf kursspezifische Channel.',
+                                colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16))
+            .add_field(name='Spanisch', value='🇪🇸')
+            .add_field(name='Ev. Religion', value='⛪')
+            .add_field(name='Kt. Religion', value='✝️')
+            .add_field(name='Ethik', value='☁️')
+            )
         reactions = ['🇪🇸', '⛪', '✝️', '☁️']
         for reaction in reactions:
             await message.add_reaction(reaction)
 
-    @commands.command(name = 'gamewahl')
+    @commands.command(name='gamewahl')
     async def function_gaming_wahl(self, ctx):
-        message = await ctx.send(embed = Embed(title = 'Gamewahl', description = 'Erhalte Zugriff auf gamespezifische Channel.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16))
-        .add_field(name = 'League of Legends', value = '<:leagueoflegends:886292690269003826>')
-        .add_field(name = 'Grand Theft Auto V', value = '<:gta5:886294793976709180>')
-        .add_field(name = 'Minecraft', value='<:Minecraft:886295237578879017>')
-        .add_field(name = 'Call of Duty', value='<:cod:886297203449147402>'))
+        message = await ctx.send(
+            embed=Embed(title='Gamewahl', description='Erhalte Zugriff auf gamespezifische Channel.',
+                        colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16))
+            .add_field(name='League of Legends', value='<:leagueoflegends:886292690269003826>')
+            .add_field(name='Grand Theft Auto V', value='<:gta5:886294793976709180>')
+            .add_field(name='Minecraft', value='<:Minecraft:886295237578879017>')
+            .add_field(name='Call of Duty', value='<:cod:886297203449147402>'))
 
-        reactions = ['<:leagueoflegends:886292690269003826>', '<:gta5:886294793976709180>', '<:Minecraft:886295237578879017>', '<:cod:886297203449147402>']
+        reactions = ['<:leagueoflegends:886292690269003826>', '<:gta5:886294793976709180>',
+                     '<:Minecraft:886295237578879017>', '<:cod:886297203449147402>']
         for reaction in reactions:
             await message.add_reaction(reaction)
+
 
 def setup(bot):
     bot.add_cog(System(bot))
