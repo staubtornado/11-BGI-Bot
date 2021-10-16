@@ -261,128 +261,105 @@ class Spiele(commands.Cog):
         print(searched_word)
 
         user_interface = await ctx.send(
-            embed=Embed(title='Hangman', description='Nutzeroberfläche wird geladen, bitte warten...',
+            embed=Embed(title='Hangman', description='<a:loading:898871492257918986> Benutzeroberfläche wird geladen, '
+                                                     'bitte warten...',
                         colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)))
+        rest_of_letters = await ctx.send('⠀')
 
-        rest_of_letters = None
         reactions = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵',
                      '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿']
         for reaction in reactions:
             try:
                 await user_interface.add_reaction(reaction)
             except discord.Forbidden:
-                if rest_of_letters == None:
-                    rest_of_letters = await ctx.send('⠀')
                 await rest_of_letters.add_reaction(reaction)
 
-        lives = 0
+        lives = 8
         letters_of_word = list(searched_word)
         used_letters = []
 
-        def players__won(searched_word: str, used_letters: list):
-            misses = 0
-            right_guesses = 0
+        def letter_matching(letter, way: int):
 
-            for letter in used_letters:
-                if letter in searched_word:
-                    right_guesses += 1
-                    if right_guesses >= len(searched_word):
-                        return True
-                else:
-                    misses += 1
-                    if misses >= 8:
-                        return False
+            """
 
-        def user_ui_update():
-            return
+            :param letter: Buchstabe / Emoji
+            :param way: 0 for Buchstabe -> Emoji, 1 for Emoji -> Buchstabe
+            :return: Buchstabe or Emoji
+            """
 
-        while lives < 8:
-            if players__won(searched_word, used_letters):
-                return await ctx.send(f'Sie haben gewonnen, das Wort war {searched_word}')
+            letter_dict = {'A': '🇦', 'B': '🇧', 'C': '🇨', 'D': '🇩', 'E': '🇪', 'F': '🇫', 'G': '🇬', 'H': '🇭',
+                           'I': '🇮', 'J': '🇯', 'K': '🇰', 'L': '🇱', 'M': '🇲', 'N': '🇳', 'O': '🇴', 'P': '🇵',
+                           'Q': '🇶', 'R': '🇷', 'S': '🇸', 'T': '🇹', 'U': '🇺', 'V': '🇻', 'W': '🇼', 'X': '🇽',
+                           'Y': '🇾', 'Z': '🇿'}
+
+            if way == 0:
+                letter_dict = {v: k for k, v in letter_dict.items()}
+                print(letter_dict.get(letter))
+            elif way == 1:
+                print(letter_dict.get(letter))
+            return letter_dict.get(letter)
+
+        async def user_ui_update(spielstatus: str):
+            counter = 0
+            word_string = ''
+            for letter in letters_of_word:
+                if letter in used_letters:
+                    word_string += f'{letter_matching(letter, 1)} '
+                    counter += 1
+                elif letter not in used_letters:
+                    word_string += ':grey_question: '
+
+            await user_interface.edit(embed=Embed(title='Hangman', description='Reagiere mit den Emojis um das Wort '
+                                                                               'zu erraten.',
+                                                  colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16))
+                                      .add_field(name='Gesuchtes Wort', value=word_string, inline=True)
+                                      .add_field(name='Spielstatus', value=spielstatus, inline=True)
+                                      .add_field(name='Leben',
+                                                 value=lives * '<:minecraft_heart:898868297485938708> ' + '⠀',
+                                                 inline=False)
+                                      .set_footer(text='Die Wörterliste kann aktuell Adjektive und Verben '
+                                                       'beinhalten.\nBitte antworten Sie innerhalb von 60 Sekunden.'))
+            return counter
+
+        await user_ui_update('<a:loading:898871492257918986> Am laufen...')
+
+        while lives > 0:
+            def check(reaction, user):
+                if (reaction.message == user_interface or reaction.message == rest_of_letters) and str(
+                        reaction.emoji) in reactions:
+                    return ((reaction.message == user_interface or reaction.message == rest_of_letters) and str(
+                        reaction.emoji) in reactions and user != self.bot.user)
+
+            try:
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+
+            except asyncio.TimeoutError:
+                return await user_ui_update('⌛ Timeout...')
+
             else:
+                if ((reaction.message == user_interface or reaction.message == rest_of_letters) and str(
+                        reaction.emoji) in reactions and user != self.bot.user):
 
-                def check(reaction, user):
-                    if (reaction.message == user_interface or reaction.message == rest_of_letters) and str(
-                            reaction.emoji) in reactions:
-                        return ((reaction.message == user_interface or reaction.message == rest_of_letters) and str(
-                            reaction.emoji) in reactions and user != self.bot.user)
+                    if reaction.message == user_interface:
+                        await user_interface.remove_reaction(str(reaction.emoji), user)
+                        await user_interface.remove_reaction(str(reaction.emoji), self.bot.user)
+                    if reaction.message == rest_of_letters:
+                        await rest_of_letters.remove_reaction(str(reaction.emoji), user)
+                        await rest_of_letters.remove_reaction(str(reaction.emoji), self.bot.user)
 
-                try:
-                    reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                    clicked_letter = letter_matching(reaction.emoji, 0)
 
-                except asyncio.TimeoutError:
-                    return  # await user_interface.edit(embed = Embed(title = 'Hangman', description = f'Man hat nicht innerhalb von 60 Sekunden seinen Zug getätigt. Das Spiel ist beendet.', colour = int(config.get('COLOUR_SETTINGS', 'standart'), base = 16)))
+                    if clicked_letter not in searched_word:
+                        lives -= 1
 
-                else:
-                    if ((reaction.message == user_interface or reaction.message == rest_of_letters) and str(
-                            reaction.emoji) in reactions and user != self.bot.user):
+                    used_letters.append(clicked_letter)
+                    if await user_ui_update('<a:loading:898871492257918986> Am laufen...') >= len(searched_word):
+                        break
 
-                        if reaction.message == user_interface:
-                            await user_interface.remove_reaction(str(reaction.emoji), user)
-                            await user_interface.remove_reaction(str(reaction.emoji), self.bot.user)
-                        if reaction.message == rest_of_letters:
-                            await rest_of_letters.remove_reaction(str(reaction.emoji), user)
-                            await rest_of_letters.remove_reaction(str(reaction.emoji), self.bot.user)
-
-                        clicked_letter = None
-
-                        if str(reaction.emoji) == '🇦':
-                            clicked_letter = 'A'
-                        elif str(reaction.emoji) == '🇧':
-                            clicked_letter = 'B'
-                        elif str(reaction.emoji) == '🇨':
-                            clicked_letter = 'C'
-                        elif str(reaction.emoji) == '🇩':
-                            clicked_letter = 'D'
-                        elif str(reaction.emoji) == '🇪':
-                            clicked_letter = 'E'
-                        elif str(reaction.emoji) == '🇫':
-                            clicked_letter = 'F'
-                        elif str(reaction.emoji) == '🇬':
-                            clicked_letter = 'G'
-                        elif str(reaction.emoji) == '🇭':
-                            clicked_letter = 'H'
-                        elif str(reaction.emoji) == '🇮':
-                            clicked_letter = 'I'
-                        elif str(reaction.emoji) == '🇯':
-                            clicked_letter = 'J'
-                        elif str(reaction.emoji) == '🇰':
-                            clicked_letter = 'K'
-                        elif str(reaction.emoji) == '🇱':
-                            clicked_letter = 'L'
-                        elif str(reaction.emoji) == '🇲':
-                            clicked_letter = 'M'
-                        elif str(reaction.emoji) == '🇳':
-                            clicked_letter = 'N'
-                        elif str(reaction.emoji) == '🇴':
-                            clicked_letter = 'O'
-                        elif str(reaction.emoji) == '🇵':
-                            clicked_letter = 'P'
-                        elif str(reaction.emoji) == '🇶':
-                            clicked_letter = 'Q'
-                        elif str(reaction.emoji) == '🇷':
-                            clicked_letter = 'R'
-                        elif str(reaction.emoji) == '🇸':
-                            clicked_letter = 'S'
-                        elif str(reaction.emoji) == '🇹':
-                            clicked_letter = 'T'
-                        elif str(reaction.emoji) == '🇺':
-                            clicked_letter = 'U'
-                        elif str(reaction.emoji) == '🇻':
-                            clicked_letter = 'V'
-                        elif str(reaction.emoji) == '🇼':
-                            clicked_letter = 'W'
-                        elif str(reaction.emoji) == '🇽':
-                            clicked_letter = 'X'
-                        elif str(reaction.emoji) == '🇾':
-                            clicked_letter = 'Y'
-                        elif str(reaction.emoji) == '🇿':
-                            clicked_letter = 'Z'
-
-                        used_letters.append(clicked_letter)
-                        await ctx.send(clicked_letter)
-
-        await ctx.send(searched_word)
+        if lives > 0:
+            await user_ui_update('✅ Gewonnen...')
+        elif lives <= 0:
+            await user_ui_update('❌ Verloren...')
 
 
 def setup(bot):
