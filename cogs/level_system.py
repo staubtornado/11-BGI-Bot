@@ -59,7 +59,7 @@ class Leveling(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.bot or message.content.startswith(config.get('BOT_SETTINGS', 'prefix'), 0,
-                                                                         1):
+                                                            1) or message.guild is None:
             return
         await(edit_data(message.author, 2, 1))
 
@@ -135,9 +135,13 @@ class Leveling(commands.Cog):
         counter = 0
         for entry in user_list:
             counter += 1
+
             user = await self.bot.fetch_user(int(entry))
             embed.add_field(name=f'{counter}. {user}', value=f'{file[entry][0]}L | {file[entry][1]}XP',
                             inline=False)
+
+            if counter >= 25:
+                break
         return await ctx.send(embed=embed)
 
 
