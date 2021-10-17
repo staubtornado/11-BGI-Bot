@@ -8,6 +8,7 @@ version.read('version.cfg')
 config = configparser.ConfigParser()
 config.read('settings.cfg')
 
+
 class rich_presence(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -16,10 +17,15 @@ class rich_presence(commands.Cog):
     def cog_unload(self):
         self.rich_presence_update.cancel()
 
-    @tasks.loop(seconds = 20)
+    @tasks.loop(seconds=20)
     async def rich_presence_update(self):
         await self.bot.wait_until_ready()
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,name=f'{config.get("BOT_SETTINGS", "prefix")}help | version: {version.get("BOT_VERSION", "latest_commit")}'))
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
+                                                                 name=f'{config.get("BOT_SETTINGS", "prefix")}help | '
+                                                                      f'vers'
+                                                                      f'ion: '
+                                                                      f'{version.get("BOT_VERSION", "latest_commit")}'))
+
 
 def setup(bot):
     bot.add_cog(rich_presence(bot))

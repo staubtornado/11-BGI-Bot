@@ -72,7 +72,7 @@ class Leveling(commands.Cog):
                 await message.channel.send(embed=Embed(title='Levelaufstieg', description='Du bist ein Level '
                                                                                           'aufgestiegen. Weiter '
                                                                                           'so!', colour=int(
-                    config.get('COLOUR_SETTINGS', 'standart'), base=16))
+                    config.get('COLOUR_SETTINGS', 'standard'), base=16))
                                            .add_field(name='Level', value=get_data(message.author, 0))
                                            .add_field(name='XP für nächstes Level',
                                                       value=round((250 * multiplikator ** get_data(message.author, 0))))
@@ -100,7 +100,7 @@ class Leveling(commands.Cog):
 
             return await ctx.send(
                 embed=Embed(title='Statistik', colour=int(
-                    config.get('COLOUR_SETTINGS', 'standart'), base=16))
+                    config.get('COLOUR_SETTINGS', 'standard'), base=16))
                     .add_field(name='Level', value=get_data(target, 0))
                     .add_field(name='XP',
                                value=f'{get_data(target, 1)} / {round((250 * multiplikator ** get_data(target, 0)))}')
@@ -130,7 +130,7 @@ class Leveling(commands.Cog):
 
         embed = Embed(title='Leaderboard', description='Top-Level auf diesem Server. Nutze `/rank @user` um weitere '
                                                        'Informationen über einen Nutzer zu erhalten.', colour=int(
-            config.get('COLOUR_SETTINGS', 'standart'), base=16))
+            config.get('COLOUR_SETTINGS', 'standard'), base=16))
 
         counter = 0
         for entry in user_list:

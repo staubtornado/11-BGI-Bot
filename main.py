@@ -4,8 +4,6 @@ import difflib
 import os
 import shutil
 import stat
-import subprocess
-import sys
 import time
 
 import discord
@@ -37,7 +35,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
 
 
 bot = commands.Bot(command_prefix=config.get('BOT_SETTINGS', 'prefix'),
-                   owner_id=int(config.get('OWNER_SETTIGNS', 'owner_id'), base=10), intents=discord.Intents.all(),
+                   owner_id=int(config.get('OWNER_SETTINGS', 'owner_id'), base=10), intents=discord.Intents.all(),
                    help_command=MyHelpCommand())
 github = Github(os.environ['GITHUB_API_TOKEN'])
 
@@ -98,11 +96,6 @@ for filename in os.listdir('./cogs'):
 @bot.event
 async def on_ready():
     print(f'Bot running with the latest update, published on {version.get("BOT_VERSION", "latest_commit")}')
-
-
-@bot.command(name='hahaa')
-async def haha(ctx):
-    return await ctx.send('Haha')
 
 
 @bot.command(name='load')
@@ -195,9 +188,11 @@ async def on_command_error(ctx, error):
                 embed = discord.Embed(title='Befehl nicht gefunden...',
                                       colour=int(config.get('COLOUR_SETTINGS', 'error'), base=16))
                 if suggestion != '':
-                    embed.description = f'Wir konnten keine Befehle mit dem Namen `{str(ctx.message.content)[1:]}` finden. Villeicht meintest du:\n{suggestion}'
+                    embed.description = f'Wir konnten keine Befehle mit dem Namen `{str(ctx.message.content)[1:]}` ' \
+                                        f'finden. Vielleicht meintest du:\n{suggestion} '
                 else:
-                    embed.description = f'Wir konnten keine Befehle mit dem Namen `{str(ctx.message.content)[1:]}` finden. Nutze `{ctx.prefix}help` für Hilfe.'
+                    embed.description = f'Wir konnten keine Befehle mit dem Namen `{str(ctx.message.content)[1:]}` ' \
+                                        f'finden. Nutze `{ctx.prefix}help` für Hilfe. '
 
                 try:
                     await ctx.send(embed=embed)
@@ -228,7 +223,8 @@ async def on_command_error(ctx, error):
 
     except Exception as err:
         return await ctx.send(embed=discord.Embed(title='Schwerwiegender Fehler',
-                                                  description=f'Ein schwerwiegender Fehler ist im Error-Handler ausgetreten. Fehlercode:\n`{error, err}`',
+                                                  description=f'Ein schwerwiegender Fehler ist im Error-Handler '
+                                                              f'ausgetreten. Fehlercode:\n`{error, err}`',
                                                   colour=int(config.get('COLOUR_SETTINGS', 'error'), base=16)))
 
 

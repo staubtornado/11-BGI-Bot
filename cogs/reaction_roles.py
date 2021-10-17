@@ -24,7 +24,7 @@ class System(commands.Cog):
 
         embed = Embed(title='System Informationen',
                       description='Informationen über die Hardware, auf dem der Bot läuft.',
-                      colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16))
+                      colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16))
 
         embed.add_field(name='Python Version', value=platform.python_version(), inline=True)
         embed.add_field(name='discord.py Version', value=discord.__version__, inline=True)
@@ -117,7 +117,7 @@ class System(commands.Cog):
     async def function_kurswahl(self, ctx):
         message = await ctx.send(
             embed=discord.Embed(title='Kursauswahl', description='Erhalte Zugriff auf kursspezifische Channel.',
-                                colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16))
+                                colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16))
             .add_field(name='Spanisch', value='🇪🇸')
             .add_field(name='Ev. Religion', value='⛪')
             .add_field(name='Kt. Religion', value='✝️')
@@ -131,7 +131,7 @@ class System(commands.Cog):
     async def function_gaming_wahl(self, ctx):
         message = await ctx.send(
             embed=Embed(title='Gamewahl', description='Erhalte Zugriff auf gamespezifische Channel.',
-                        colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16))
+                        colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16))
             .add_field(name='League of Legends', value='<:leagueoflegends:886292690269003826>')
             .add_field(name='Grand Theft Auto V', value='<:gta5:886294793976709180>')
             .add_field(name='Minecraft', value='<:Minecraft:886295237578879017>')

@@ -4,12 +4,9 @@ import datetime
 import json
 import math
 import random
-from os import replace
 from pathlib import Path
-from time import daylight
 
 import discord
-from discord import colour
 from discord.embeds import Embed
 from discord.ext import commands
 
@@ -29,7 +26,7 @@ class Spiele(commands.Cog):
         player_X = enemy
 
         message = await ctx.send(embed=Embed(title='Tic Tac Toe', description=f'{player_O.mention} ist am Zug.',
-                                             colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)).add_field(
+                                             colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)).add_field(
             name='Spieler :blue_circle:', value=player_O.mention, inline=True).add_field(name='Spieler :x:',
                                                                                          value=player_X.mention,
                                                                                          inline=True).add_field(
@@ -58,8 +55,10 @@ class Spiele(commands.Cog):
 
             except asyncio.TimeoutError:
                 return await message.edit(embed=Embed(title='Tic Tac Toe',
-                                                      description=f'{turn.mention} hat nicht innerhalb von 60 Sekunden seinen Zug getätigt. Das Spiel ist beendet.',
-                                                      colour=int(config.get('COLOUR_SETTINGS', 'standart'),
+                                                      description=f'{turn.mention} hat nicht innerhalb von 60 '
+                                                                  f'Sekunden seinen Zug getätigt. Das Spiel ist '
+                                                                  f'beendet.',
+                                                      colour=int(config.get('COLOUR_SETTINGS', 'standard'),
                                                                  base=16)).add_field(name='Spieler :blue_circle:',
                                                                                      value=player_O.mention,
                                                                                      inline=True).add_field(
@@ -100,7 +99,7 @@ class Spiele(commands.Cog):
                     if field_0 == field_1 == field_2 and field_0 != ':grey_question:':
                         return await message.edit(
                             embed=Embed(title='Tic Tac Toe', description=f'{turn.mention} hat gewonnen!',
-                                        colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)).add_field(
+                                        colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)).add_field(
                                 name='Spieler :blue_circle:', value=player_O.mention, inline=True).add_field(
                                 name='Spieler :x:', value=player_X.mention, inline=True).add_field(name='Spielfeld',
                                                                                                    value=f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}',
@@ -108,7 +107,7 @@ class Spiele(commands.Cog):
                     elif field_3 == field_4 == field_5 and field_3 != ':grey_question:':
                         return await message.edit(
                             embed=Embed(title='Tic Tac Toe', description=f'{turn.mention} hat gewonnen!',
-                                        colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)).add_field(
+                                        colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)).add_field(
                                 name='Spieler :blue_circle:', value=player_O.mention, inline=True).add_field(
                                 name='Spieler :x:', value=player_X.mention, inline=True).add_field(name='Spielfeld',
                                                                                                    value=f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}',
@@ -116,7 +115,7 @@ class Spiele(commands.Cog):
                     elif field_6 == field_7 == field_8 and field_6 != ':grey_question:':
                         return await message.edit(
                             embed=Embed(title='Tic Tac Toe', description=f'{turn.mention} hat gewonnen!',
-                                        colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)).add_field(
+                                        colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)).add_field(
                                 name='Spieler :blue_circle:', value=player_O.mention, inline=True).add_field(
                                 name='Spieler :x:', value=player_X.mention, inline=True).add_field(name='Spielfeld',
                                                                                                    value=f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}',
@@ -124,7 +123,7 @@ class Spiele(commands.Cog):
                     elif field_0 == field_3 == field_6 and field_0 != ':grey_question:':
                         return await message.edit(
                             embed=Embed(title='Tic Tac Toe', description=f'{turn.mention} hat gewonnen!',
-                                        colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)).add_field(
+                                        colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)).add_field(
                                 name='Spieler :blue_circle:', value=player_O.mention, inline=True).add_field(
                                 name='Spieler :x:', value=player_X.mention, inline=True).add_field(name='Spielfeld',
                                                                                                    value=f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}',
@@ -132,7 +131,7 @@ class Spiele(commands.Cog):
                     elif field_1 == field_4 == field_7 and field_1 != ':grey_question:':
                         return await message.edit(
                             embed=Embed(title='Tic Tac Toe', description=f'{turn.mention} hat gewonnen!',
-                                        colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)).add_field(
+                                        colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)).add_field(
                                 name='Spieler :blue_circle:', value=player_O.mention, inline=True).add_field(
                                 name='Spieler :x:', value=player_X.mention, inline=True).add_field(name='Spielfeld',
                                                                                                    value=f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}',
@@ -140,7 +139,7 @@ class Spiele(commands.Cog):
                     elif field_2 == field_5 == field_8 and field_2 != ':grey_question:':
                         return await message.edit(
                             embed=Embed(title='Tic Tac Toe', description=f'{turn.mention} hat gewonnen!',
-                                        colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)).add_field(
+                                        colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)).add_field(
                                 name='Spieler :blue_circle:', value=player_O.mention, inline=True).add_field(
                                 name='Spieler :x:', value=player_X.mention, inline=True).add_field(name='Spielfeld',
                                                                                                    value=f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}',
@@ -148,7 +147,7 @@ class Spiele(commands.Cog):
                     elif field_0 == field_4 == field_8 and field_0 != ':grey_question:':
                         return await message.edit(
                             embed=Embed(title='Tic Tac Toe', description=f'{turn.mention} hat gewonnen!',
-                                        colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)).add_field(
+                                        colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)).add_field(
                                 name='Spieler :blue_circle:', value=player_O.mention, inline=True).add_field(
                                 name='Spieler :x:', value=player_X.mention, inline=True).add_field(name='Spielfeld',
                                                                                                    value=f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}',
@@ -156,7 +155,7 @@ class Spiele(commands.Cog):
                     elif field_2 == field_4 == field_6 and field_2 != ':grey_question:':
                         return await message.edit(
                             embed=Embed(title='Tic Tac Toe', description=f'{turn.mention} hat gewonnen!',
-                                        colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)).add_field(
+                                        colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)).add_field(
                                 name='Spieler :blue_circle:', value=player_O.mention, inline=True).add_field(
                                 name='Spieler :x:', value=player_X.mention, inline=True).add_field(name='Spielfeld',
                                                                                                    value=f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}',
@@ -164,7 +163,7 @@ class Spiele(commands.Cog):
                     else:
                         await message.edit(
                             embed=Embed(title='Tic Tac Toe', description=f'{next_player.mention} ist am Zug.',
-                                        colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)).add_field(
+                                        colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)).add_field(
                                 name='Spieler :blue_circle:', value=player_O.mention, inline=True).add_field(
                                 name='Spieler :x:', value=player_X.mention, inline=True).add_field(name='Spielfeld',
                                                                                                    value=f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}',
@@ -173,7 +172,7 @@ class Spiele(commands.Cog):
         else:
             return await message.edit(
                 embed=Embed(title='Tic Tac Toe', description=f'Unentschieden, da keine Felder mehr verfügbar sind.',
-                            colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)).add_field(
+                            colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)).add_field(
                     name='Spieler :blue_circle:', value=player_O.mention, inline=True).add_field(name='Spieler :x:',
                                                                                                  value=player_X.mention,
                                                                                                  inline=True).add_field(
@@ -186,12 +185,13 @@ class Spiele(commands.Cog):
         antonio = ctx.guild.get_member(404638895934930945)
 
         await ctx.send(embed=Embed(title='Biobuch',
-                                   description=f'{antonio.mention} hat sein Biobuch nicht zurück gegeben. Er wird daran erinnert.',
-                                   colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)))
+                                   description=f'{antonio.mention} hat sein Biobuch nicht zurück gegeben. Er wird '
+                                               f'daran erinnert.',
+                                   colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)))
 
         try:
             await antonio.send(embed=Embed(title='Biobuch', description='Du hast dein Biobuch nicht zurückgegeben.',
-                                           colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)))
+                                           colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)))
         except discord.Forbidden:
             return await ctx.send(
                 embed=Embed(title='Fehler', description=f'{antonio.mention} will nicht daran erinnert werden.',
@@ -209,7 +209,7 @@ class Spiele(commands.Cog):
             d1 = datetime.datetime.now()
             delta = d1 - d0
 
-            tage_gesamt = delta.days - ((math.trunc(delta.days / 7) * 2))
+            tage_gesamt = delta.days - (math.trunc(delta.days / 7) * 2)
             verpasster_unterricht = 0
 
             alle_verspätungen = file['verspaetungen']
@@ -218,7 +218,7 @@ class Spiele(commands.Cog):
 
             return await ctx.send(embed=Embed(title='Antonio\'s Statistiken',
                                               description=f'Statistiken über Unannehmlichkeiten unseres Antonio\'s seit {tage_gesamt} Schultag*en.',
-                                              colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16))
+                                              colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16))
                                   .add_field(name='Höchste Verspätung', value=f'{max(alle_verspätungen)} Minuten')
                                   .add_field(name='Anzahl der Verspätungen', value=len(alle_verspätungen))
                                   .add_field(name='Verspätungen Ø',
@@ -258,12 +258,10 @@ class Spiele(commands.Cog):
         words = list(words.split(" "))
         searched_word = random.choice(words)
 
-        print(searched_word)
-
         user_interface = await ctx.send(
             embed=Embed(title='Hangman', description='<a:loading:898871492257918986> Benutzeroberfläche wird geladen, '
                                                      'bitte warten...',
-                        colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16)))
+                        colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)))
         rest_of_letters = await ctx.send('⠀')
 
         reactions = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵',
@@ -294,9 +292,6 @@ class Spiele(commands.Cog):
 
             if way == 0:
                 letter_dict = {v: k for k, v in letter_dict.items()}
-                print(letter_dict.get(letter))
-            elif way == 1:
-                print(letter_dict.get(letter))
             return letter_dict.get(letter)
 
         async def user_ui_update(spielstatus: str):
@@ -311,11 +306,12 @@ class Spiele(commands.Cog):
 
             await user_interface.edit(embed=Embed(title='Hangman', description='Reagiere mit den Emojis um das Wort '
                                                                                'zu erraten.',
-                                                  colour=int(config.get('COLOUR_SETTINGS', 'standart'), base=16))
+                                                  colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16))
                                       .add_field(name='Gesuchtes Wort', value=word_string, inline=True)
                                       .add_field(name='Spielstatus', value=spielstatus, inline=True)
                                       .add_field(name='Leben',
-                                                 value=lives * '<:minecraft_heart:898868297485938708> ' + '⠀',
+                                                 value=(lives*'<:minecraft_heart:898868297485938708> ') if lives != 0
+                                                 else f'Keine Leben mehr, das Wort war `{searched_word}`.',
                                                  inline=False)
                                       .set_footer(text='Die Wörterliste kann aktuell Adjektive und Verben '
                                                        'beinhalten.\nBitte antworten Sie innerhalb von 60 Sekunden.'))
