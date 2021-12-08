@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands, tasks
 import configparser
+import datetime
 
 version = configparser.ConfigParser()
 version.read('version.cfg')
@@ -19,12 +20,12 @@ class rich_presence(commands.Cog):
 
     @tasks.loop(seconds=20)
     async def rich_presence_update(self):
+        ferien = datetime.datetime(2021, 12, 23, 10, 15)
+        heute = datetime.datetime.today().replace(microsecond=0)
+
         await self.bot.wait_until_ready()
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
-                                                                 name=f'{config.get("BOT_SETTINGS", "prefix")}help | '
-                                                                      f'vers'
-                                                                      f'ion: '
-                                                                      f'{version.get("BOT_VERSION", "latest_commit")}'))
+                                                                 name=f'{ferien - heute}'))
 
 
 def setup(bot):

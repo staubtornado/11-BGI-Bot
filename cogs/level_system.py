@@ -83,11 +83,11 @@ class Leveling(commands.Cog):
             users_that_have_to_wait.remove(message.author.id)
             return
 
-    @commands.command(name='rank')
+    @commands.command(name="rank", aliases=['level'])
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def rank(self, ctx, *, selected_user: discord.Member = None):
         if selected_user is None:
-            target = ctx.author
+            target: discord.Member = ctx.author
         else:
             target = selected_user
 
@@ -106,13 +106,13 @@ class Leveling(commands.Cog):
                                value=f'{get_data(target, 1)} / {round((250 * multiplikator ** get_data(target, 0)))}')
                     .add_field(name='Nachrichten', value=get_data(target, 2))
                     .add_field(name='Fortschritt', value=bar)
-                    .set_author(name=target, icon_url=target.avatar_url))
+                    .set_author(name=target, icon_url=target.avatar.url))
         except KeyError:
             return await ctx.send(embed=Embed(title='Fehler', description='Irgendwas ist schief gelaufen. '
                                                                           'Anscheinend haben wir noch keine '
                                                                           'Informationen über diesen Nutzer.',
                                               colour=int(config.get('COLOUR_SETTINGS', 'error'), base=16)).set_author(
-                name=target, icon_url=target.avatar_url))
+                name=target, icon_url=target.avatar.url))
 
     @commands.command(name='levels', aliases=['leaderboard', 'ranks'])
     @commands.cooldown(1, 5, commands.BucketType.user)

@@ -31,7 +31,8 @@ class Spiele(commands.Cog):
                                                                                          value=player_X.mention,
                                                                                          inline=True).add_field(
             name='Spielfeld',
-            value=f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}',
+            value=f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n'
+                  f'-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}',
             inline=False))
 
         reactions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
@@ -217,16 +218,20 @@ class Spiele(commands.Cog):
                 verpasster_unterricht += verspätung
 
             return await ctx.send(embed=Embed(title='Antonio\'s Statistiken',
-                                              description=f'Statistiken über Unannehmlichkeiten unseres Antonio\'s seit {tage_gesamt} Schultag*en.',
+                                              description=f'Statistiken über Unannehmlichkeiten unseres Antonio\'s '
+                                                          f'`seit {tage_gesamt} Schultag*en`.',
                                               colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16))
                                   .add_field(name='Höchste Verspätung', value=f'{max(alle_verspätungen)} Minuten')
                                   .add_field(name='Anzahl der Verspätungen', value=len(alle_verspätungen))
                                   .add_field(name='Verspätungen Ø',
                                              value=f'{round(verpasster_unterricht / len(alle_verspätungen), 2)} Minuten')
-                                  .add_field(name='Verpasste Unterrichtszeit', value=f'{verpasster_unterricht} Minuten')
+                                  .add_field(name='Verpasste Unterrichtszeit', value=f'{verpasster_unterricht} Min ({round(verpasster_unterricht / 45, 2)} Std.)')
                                   .add_field(name='⠀', value='⠀', inline=False)
                                   .add_field(name='Testheft vergessen', value=file['testheft_vergessen'])
                                   .add_field(name='Hausaufgaben vergessen', value=file['hausaufgaben_vergessen'])
+                                  .set_thumbnail(url='https://media.discordapp.net/attachments/883364257364844615'
+                                                     '/903957644472123402/PXL_20211029_093552263_2.jpg?width=550'
+                                                     '&height=671')
                                   )
 
     @function_antonio.command(name='add')
@@ -279,7 +284,6 @@ class Spiele(commands.Cog):
         def letter_matching(letter, way: int):
 
             """
-
             :param letter: Buchstabe / Emoji
             :param way: 0 for Buchstabe -> Emoji, 1 for Emoji -> Buchstabe
             :return: Buchstabe or Emoji

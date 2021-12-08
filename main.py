@@ -5,13 +5,17 @@ import os
 import shutil
 import stat
 import time
+import urllib.request
+import os
+import sys
 
 import discord
 import dotenv
-import git
+# import git
 from discord.embeds import Embed
 from discord.ext import commands, tasks
-from github import Github
+
+# from github import Github
 
 version = configparser.ConfigParser()
 version.read('version.cfg')
@@ -37,53 +41,71 @@ class MyHelpCommand(commands.MinimalHelpCommand):
 bot = commands.Bot(command_prefix=config.get('BOT_SETTINGS', 'prefix'),
                    owner_id=int(config.get('OWNER_SETTINGS', 'owner_id'), base=10), intents=discord.Intents.all(),
                    help_command=MyHelpCommand())
-github = Github(os.environ['GITHUB_API_TOKEN'])
+
+
+# github = Github(os.environ['GITHUB_API_TOKEN'])
+
+# print(github.get_repo('Staubtornado/11-BGI-Bot').get_releases().get_page(0))
+# # print(github.get_repo('Staubtornado/11-BGI-Bot').git_url)
+# print(github.get_repo('Staubtornado/11-BGI-Bot').get_release(
+#     str(github.get_repo('Staubtornado/11-BGI-Bot').get_releases().get_page(0)[0])[:-8][27:]).zipball_url)
 
 
 @tasks.loop(minutes=30)
 async def github_update_check():
-    if version.get('BOT_VERSION', 'latest_commit') == str(github.get_repo('Staubtornado/11-BGI-Bot').pushed_at):
-        return
-    else:
-        print('Update found. Preparing update to the newest version...\nClearing content of update folder...')
+    # if version.get('BOT_VERSION', 'latest_commit') == str(github.get_repo(
+    # 'Staubtornado/11-BGI-Bot').get_latest_release()): pass
 
-        def on_rm_error(func, path, exc_info):
-            print(f'{func}{path} {exc_info}')
-            os.chmod(path, stat.S_IWRITE)
-            os.unlink(path)
+    path = os.path.dirname(__file__)
 
-        shutil.rmtree(f'{os.getcwd()}{os.sep}update{os.sep}11-BGI-Bot{os.sep}', onerror=on_rm_error)
+    # with urllib.request.urlopen(github.get_repo('Staubtornado/11-BGI-Bot').get_release(
+    #         str(github.get_repo('Staubtornado/11-BGI-Bot').get_releases().get_page(0)[0])[:-8][
+    #         27:]).zipball_url) as upd:
+    #     with open(path, "wb+") as f:
+    #         f.write(upd.read())
 
-        print('Downloading the newest update...')
-        git.Git(f"{os.getcwd()}{os.sep}update").clone("https://github.com/Staubtornado/11-BGI-Bot.git")
-        print('Update downloaded. Applying changes...')
-        shutil.rmtree(f'{os.getcwd()}{os.sep}update{os.sep}11-BGI-Bot{os.sep}.git', onerror=on_rm_error)
+    os.execl(sys.argv[0], *sys.argv)
 
-        root_src_dir = f'{os.getcwd()}{os.sep}update{os.sep}11-BGI-Bot{os.sep}'
-        root_dst_dir = os.getcwd()
-
-        for src_dir, dirs, files in os.walk(root_src_dir):
-            dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
-            if not os.path.exists(dst_dir):
-                os.makedirs(dst_dir)
-            for file_ in files:
-                src_file = os.path.join(src_dir, file_)
-                dst_file = os.path.join(dst_dir, file_)
-                if os.path.exists(dst_file):
-                    if os.path.samefile(src_file, dst_file):
-                        continue
-                    os.remove(dst_file)
-                shutil.move(src_file, dst_dir)
-
-        version.set('BOT_VERSION', 'latest_commit', str(github.get_repo('Staubtornado/11-BGI-Bot').pushed_at))
-
-        with open('version.cfg', 'w') as conf:
-            version.write(conf)
-        # {str(sys.version)[:1]
-        print('Update successful. The script has to be restarted manually...')
-        # os.open('main.py', flags=os.O_RDONLY)
-        time.sleep(0.2)
-        exit()
+    # else:
+    #     print('Update found. Preparing update to the newest version...\nClearing content of update folder...')
+    #
+    #     def on_rm_error(func, path, exc_info):
+    #         print(f'{func}{path} {exc_info}')
+    #         os.chmod(path, stat.S_IWRITE)
+    #         os.unlink(path)
+    #
+    #     shutil.rmtree(f'{os.getcwd()}{os.sep}update{os.sep}11-BGI-Bot{os.sep}', onerror=on_rm_error)
+    #
+    #     print('Downloading the newest update...')
+    #     # git.Git(f"{os.getcwd()}{os.sep}update").clone("https://github.com/Staubtornado/11-BGI-Bot.git")
+    #     print('Update downloaded. Applying changes...')
+    #     shutil.rmtree(f'{os.getcwd()}{os.sep}update{os.sep}11-BGI-Bot{os.sep}.git', onerror=on_rm_error)
+    #
+    #     root_src_dir = f'{os.getcwd()}{os.sep}update{os.sep}11-BGI-Bot{os.sep}'
+    #     root_dst_dir = os.getcwd()
+    #
+    #     for src_dir, dirs, files in os.walk(root_src_dir):
+    #         dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
+    #         if not os.path.exists(dst_dir):
+    #             os.makedirs(dst_dir)
+    #         for file_ in files:
+    #             src_file = os.path.join(src_dir, file_)
+    #             dst_file = os.path.join(dst_dir, file_)
+    #             if os.path.exists(dst_file):
+    #                 if os.path.samefile(src_file, dst_file):
+    #                     continue
+    #                 os.remove(dst_file)
+    #             shutil.move(src_file, dst_dir)
+    #
+    #     version.set('BOT_VERSION', 'latest_commit', str(github.get_repo('Staubtornado/11-BGI-Bot').pushed_at))
+    #
+    #     with open('version.cfg', 'w') as conf:
+    #         version.write(conf)
+    #     # {str(sys.version)[:1]
+    #     print('Update successful. The script has to be restarted manually...')
+    #     os.open('main.py', flags=os.O_RDONLY)
+    #     time.sleep(0.2)
+    #     exit()
 
 
 # github_update_check.start()
@@ -104,9 +126,9 @@ async def load(ctx, extension):
     try:
         bot.load_extension(f"cogs.{extension}")
         await ctx.message.add_reaction('✅')
-    except commands.ExtensionAlreadyLoaded:
+    except discord.ExtensionAlreadyLoaded:
         await ctx.message.add_reaction('❌')
-    except commands.ExtensionNotFound:
+    except discord.ExtensionNotFound:
         await ctx.message.add_reaction('❓')
     else:
         await ctx.message.add_reaction('✅')
@@ -118,9 +140,9 @@ async def unload(ctx, extension):
     try:
         bot.unload_extension(f'cogs.{extension}')
         await ctx.message.add_reaction('✅')
-    except commands.ExtensionNotLoaded:
+    except discord.ExtensionNotLoaded:
         await ctx.message.add_reaction('❌')
-    except commands.ExtensionNotFound:
+    except discord.ExtensionNotFound:
         await ctx.message.add_reaction('❓')
     else:
         await ctx.message.add_reaction('✅')
@@ -133,9 +155,9 @@ async def reload(ctx, extension):
         bot.unload_extension(f'cogs.{extension}')
         bot.load_extension(f'cogs.{extension}')
         await ctx.message.add_reaction('✅')
-    except commands.ExtensionNotFound:
+    except discord.ExtensionNotFound:
         await ctx.message.add_reaction('❓')
-    except commands.ExtensionNotLoaded:
+    except discord.ExtensionNotLoaded:
         await ctx.message.add_reaction('❌')
     else:
         await ctx.message.add_reaction('✅')
@@ -178,7 +200,7 @@ async def on_command_error(ctx, error):
                     try:
                         if await(bot.get_command(command).can_run(ctx)) is True:
                             available_commands.append(command)
-                    except Exception:
+                    except Exception as e:
                         pass
                 suggestion = ""
                 similarity_search = difflib.get_close_matches(str(ctx.message.content)[4:], available_commands)
