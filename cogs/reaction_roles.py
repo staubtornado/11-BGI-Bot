@@ -32,7 +32,8 @@ class System(commands.Cog):
         embed.add_field(name='Release / Version', value=f'{platform.release()} / {platform.version()}', inline=True)
         embed.add_field(name='Processor', value=platform.processor(), inline=True)
         embed.add_field(name='RAM',
-                        value=f'{round(psutil.virtual_memory().used / (1024.0 ** 3), 2)}GB / {round(psutil.virtual_memory().total / (1024.0 ** 3), 2)}GB',
+                        value=f'{round(psutil.virtual_memory().used / (1024.0 ** 3), 2)}GB /'
+                              f' {round(psutil.virtual_memory().total / (1024.0 ** 3), 2)}GB',
                         inline=True)
         return await ctx.send(embed=embed)
 

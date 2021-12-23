@@ -4,6 +4,7 @@ import datetime
 import discord
 from discord import Embed
 from discord.ext import commands
+from discord.commands import SlashCommandGroup
 import json
 
 config = configparser.ConfigParser()
@@ -71,13 +72,22 @@ def calculate_dates(original_date, now_date):
     return ((delta1 if delta1 > now_date else delta2) - now_date).days
 
 
+birthday_kalndr: SlashCommandGroup = SlashCommandGroup("birthday", "Befehle der Geburtstage")
+
+
 class GeburtstagsKalender(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group(name="geburtstage")
+    @birthday_kalndr.command(name="geburtstage", guild_ids=[795588352387579914])
     async def geburtstage(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
+            message = await ctx.send(
+                embed=Embed(title="Geburtstage", description="<a:loading:820216894703009842> Kalender wird "
+                                                             "geladen, bitte warten...")
+                    .set_footer(text="Diese Liste an Geburtstagen ist sau ineffizient geschrieben und wird "
+                                     "jedes mal neu berechnet."))
+
             now = datetime.datetime.now()
             file = get_all_data()
 
@@ -93,8 +103,9 @@ class GeburtstagsKalender(commands.Cog):
             del temp_bd_list
 
             embed = Embed(title='Geburtstage',
-                          description=f'Geburtstage auf diesem Server.', colour=int(
-                            config.get('COLOUR_SETTINGS', 'standard'), base=16))
+                          description=f'Geburtstage auf diesem Server.\nNutze `/geburtstage add (geburtsdatum)` um '
+                                      f'deinen Geburtstag hinzuzufügen.', colour=int(
+                    config.get('COLOUR_SETTINGS', 'standard'), base=16))
 
             counter: int = 0
             for user in user_list:
@@ -107,9 +118,9 @@ class GeburtstagsKalender(commands.Cog):
 
                 if counter >= 25:
                     break
-            return await ctx.send(embed=embed)
+            return await message.edit(embed=embed)
 
-    @geburtstage.command(name="add")
+    @birthday_kalndr.command(name="geburtstage", guild_ids=[795588352387579914])
     async def add(self, ctx, date: str):
         view = ConfirmButton()
         await ctx.send("Dein Geburtstag entspricht dem `DD.MM.YYYY`-Format?", view=view)
