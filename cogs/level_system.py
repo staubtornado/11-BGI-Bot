@@ -57,7 +57,7 @@ class Leveling(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
         if message.author.bot or message.content.startswith(config.get('BOT_SETTINGS', 'prefix'), 0,
                                                             1) or message.guild is None:
             return
@@ -77,7 +77,7 @@ class Leveling(commands.Cog):
                                            .add_field(name='XP für nächstes Level',
                                                       value=round((250 * multiplikator ** get_data(message.author, 0))))
                                            .add_field(name='Gesendete Nachrichten', value=get_data(message.author, 2))
-                                           .set_author(name=message.author, icon_url=message.author.avatar_url),
+                                           .set_author(name=message.author, icon_url=message.author.avatar.url),
                                            delete_after=60)
             await asyncio.sleep(60)
             users_that_have_to_wait.remove(message.author.id)

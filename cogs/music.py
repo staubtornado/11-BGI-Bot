@@ -232,8 +232,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
         info = await loop.run_in_executor(None, partial)
 
         cls.search = {"title": f'Search results for:\n**{search}**', "type": 'rich', "color": 7506394,
-                      "author": {'name': f'{ctx.author.name}', 'url': f'{ctx.author.avatar_url}',
-                                 'icon_url': f'{ctx.author.avatar_url}'}}
+                      "author": {'name': f'{ctx.author.name}', 'url': f'{ctx.author.avatar.url}',
+                                 'icon_url': f'{ctx.author.avatar.url}'}}
 
         lst = []
 
