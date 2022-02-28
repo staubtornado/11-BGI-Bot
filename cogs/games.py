@@ -181,25 +181,6 @@ class Spiele(commands.Cog):
                     value=f'{field_0}⠀|⠀{field_1}⠀|⠀{field_2}\n-------------------\n{field_3}⠀|⠀{field_4}⠀|⠀{field_5}\n-------------------\n{field_6}⠀|⠀{field_7}⠀|⠀{field_8}',
                     inline=False))
 
-    @commands.command(name='biobuch')
-    async def function_biobuch(self, ctx):
-        antonio = ctx.guild.get_member(404638895934930945)
-
-        await ctx.send(embed=Embed(title='Biobuch',
-                                   description=f'{antonio.mention} hat sein Biobuch nicht zurück gegeben. Er wird '
-                                               f'daran erinnert.',
-                                   colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)))
-
-        try:
-            await antonio.send(embed=Embed(title='Biobuch', description='Du hast dein Biobuch nicht zurückgegeben.',
-                                           colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16)))
-        except discord.Forbidden:
-            return await ctx.send(
-                embed=Embed(title='Fehler', description=f'{antonio.mention} will nicht daran erinnert werden.',
-                            colour=int(config.get('COLOUR_SETTINGS', 'error'), base=16)))
-        else:
-            return
-
     @commands.group(name='antonio', pass_context=True)
     async def function_antonio(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -213,45 +194,31 @@ class Spiele(commands.Cog):
             tage_gesamt = delta.days - (math.trunc(delta.days / 7) * 2)
             verpasster_unterricht = 0
 
-            alle_verspätungen = file['verspaetungen']
-            for verspätung in alle_verspätungen:
-                verpasster_unterricht += verspätung
+            alle_verspaetungen = file['verspaetungen']
+            for verspaetung in alle_verspaetungen:
+                verpasster_unterricht += verspaetung
 
             return await ctx.send(embed=Embed(title='Antonio\'s Statistiken',
                                               description=f'Statistiken über Unannehmlichkeiten unseres Antonio\'s '
                                                           f'`seit {tage_gesamt} Schultag*en`.',
                                               colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16))
-                                  .add_field(name='Höchste Verspätung', value=f'{max(alle_verspätungen)} Minuten')
-                                  .add_field(name='Anzahl der Verspätungen', value=len(alle_verspätungen))
+                                  .add_field(name='Höchste Verspätung', value=f'{max(alle_verspaetungen)} Minuten')
+                                  .add_field(name='Anzahl der Verspätungen', value=len(alle_verspaetungen))
                                   .add_field(name='Verspätungen Ø',
-                                             value=f'{round(verpasster_unterricht / len(alle_verspätungen), 2)} Minuten')
+                                             value=f'{round(verpasster_unterricht / len(alle_verspaetungen), 2)} Minuten')
                                   .add_field(name='Verpasste Unterrichtszeit', value=f'{verpasster_unterricht} Min ({round(verpasster_unterricht / 45, 2)} Std.)')
-                                  .add_field(name='⠀', value='⠀', inline=False)
-                                  .add_field(name='Testheft vergessen', value=file['testheft_vergessen'])
-                                  .add_field(name='Hausaufgaben vergessen', value=file['hausaufgaben_vergessen'])
                                   .set_thumbnail(url='https://media.discordapp.net/attachments/883364257364844615'
                                                      '/903957644472123402/PXL_20211029_093552263_2.jpg?width=550'
                                                      '&height=671')
                                   )
 
     @function_antonio.command(name='add')
-    async def function_antonio_add(ctx, verspätung: int):
+    async def function_antonio_add(ctx, verspaetung: int):
         print(ctx.message.content)
         with open("antonio.json", "r") as f:
             file = json.load(f)
 
-            file['verspaetungen'].append(verspätung)
-
-        with open("antonio.json", "w") as f:
-            json.dump(file, f)
-        return await ctx.message.add_reaction('✅')
-
-    @function_antonio.command(name='testheft')
-    async def function_antonio_add(ctx):
-        with open("antonio.json", "r") as f:
-            file = json.load(f)
-
-            file['testheft_vergessen'] += 1
+            file['verspaetungen'].append(verspaetung)
 
         with open("antonio.json", "w") as f:
             json.dump(file, f)
