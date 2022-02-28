@@ -1,16 +1,9 @@
-import discord
-from discord.ext import commands, tasks
-import configparser
-import datetime
-
-version = configparser.ConfigParser()
-version.read('version.cfg')
-
-config = configparser.ConfigParser()
-config.read('settings.cfg')
+from discord import ActivityType, Activity
+from discord.ext import tasks
+from discord.ext.commands import Cog
 
 
-class rich_presence(commands.Cog):
+class rich_presence(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.rich_presence_update.start()
@@ -20,12 +13,12 @@ class rich_presence(commands.Cog):
 
     @tasks.loop(seconds=20)
     async def rich_presence_update(self):
-        ferien = datetime.datetime(2021, 12, 23, 10, 15)
-        heute = datetime.datetime.today().replace(microsecond=0)
+        # ferien = datetime.datetime(2021, 12, 23, 10, 15)
+        # heute = datetime.datetime.today().replace(microsecond=0)
 
         await self.bot.wait_until_ready()
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
-                                                                 name=f'{ferien - heute}'))
+        await self.bot.change_presence(activity=Activity(type=ActivityType.listening,
+                                                         name=f"Python 3.9"))
 
 
 def setup(bot):
