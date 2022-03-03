@@ -2,7 +2,7 @@ from configparser import ConfigParser
 from datetime import datetime
 from json import load, dump
 
-from discord import Bot, Interaction, ButtonStyle, slash_command, ApplicationContext, Embed
+from discord import Bot, Interaction, ButtonStyle, slash_command, ApplicationContext, Embed, User, Forbidden
 from discord.ext import tasks
 from discord.ext.commands import Cog
 from discord.ui import View, Button, button as ui_button
@@ -14,7 +14,7 @@ bd_list: list = []
 user_list: list = []
 
 
-def update_lists():
+async def update_lists(bot: Bot):
     now = datetime.now()
     file = get_all_data()
 
@@ -26,7 +26,8 @@ def update_lists():
         delta: int = calculate_dates(bd, now)
         bd_list.append(delta)
         bd_list.sort()
-        user_list.insert(bd_list.index(delta), entry)
+        user: User = await bot.fetch_user(int(entry))
+        user_list.insert(bd_list.index(delta), user)
 
 
 class ConfirmButton(View):
@@ -59,7 +60,7 @@ def get_all_data():
     return file
 
 
-def edit_geburtstag(user_id: int, geburtstag: str):
+async def edit_geburtstag(user_id: int, geburtstag: str, bot: Bot):
     date: list = geburtstag.split(".")
 
     with open("geburtstage.json", 'r') as f:
@@ -70,7 +71,7 @@ def edit_geburtstag(user_id: int, geburtstag: str):
     with open("geburtstage.json", "w") as f:
         dump(file, f)
 
-    update_lists()
+    await update_lists(bot)
     return
 
 
@@ -86,12 +87,39 @@ class Geburtstage(Cog):
         self.bot = bot
         self.update_list_task.start()
 
+        self.start = True
+
     def cog_unload(self):
         self.update_list_task.cancel()
 
-    @tasks.loop(hours=1)
+    @tasks.loop(hours=24)
     async def update_list_task(self):
-        update_lists()
+        await update_lists(self.bot)
+
+        if not self.start:
+            users: list = self.bot.get_guild(795588352387579914).members
+            for i, days in enumerate(bd_list):
+                bd_user: User = user_list[i]
+
+                if days == 2:
+                    for user in users:
+                        if user == bd_user:
+                            continue
+                        if not user.bot:
+                            try:
+                                await user.send(f"🥳 {bd_user.mention} hat **in 3 Tagen Geburtstag**!")
+                            except Forbidden:
+                                continue
+                elif days == 0:
+                    for user in users:
+                        if user == bd_user:
+                            continue
+                        if not user.bot:
+                            try:
+                                await user.send(f"🥳 {bd_user.mention} hat **morgen Geburtstag**!")
+                            except Forbidden:
+                                continue
+        self.start = False
 
     @slash_command()
     async def geburtstage(self, ctx: ApplicationContext):
@@ -105,12 +133,12 @@ class Geburtstage(Cog):
                       colour=int(config.get('COLOUR_SETTINGS', 'standard'), base=16))
 
         for i, user in enumerate(user_list):
-            new: str = f"<t:" \
-                       f"{str(datetime(int(file[user][2]), int(file[user][1]), int(file[user][0])).timestamp())[:-2]}" \
-                       f":D>: `{bd_list[i]}` Tag*e verbleibend."
+            timestamp: str = str(datetime(
+                int(file[str(user.id)][2]), int(file[str(user.id)][1]), int(file[str(user.id)][0])).timestamp())[:-2]
 
-            d_user = await self.bot.fetch_user(int(user))
-            embed.add_field(name=f'{i + 1}. {d_user}', value=new, inline=False)
+            new: str = f"<t:" \
+                       f"{timestamp}:D>: `{bd_list[i] + 1 if bd_list[i] != 364 else 0}` Tag*e verbleibend."
+            embed.add_field(name=f'{i + 1}. {user}', value=new, inline=False)
 
             if i >= 24:
                 break
@@ -127,7 +155,7 @@ class Geburtstage(Cog):
         if view.value is None:
             return
         if view.value:
-            edit_geburtstag(ctx.author.id, date)
+            await edit_geburtstag(ctx.author.id, date, self.bot)
             return await ctx.respond("Dein **Geburtstag** wurde **hinzugefügt**.")
         await ctx.respond("Dein **Geburtstag** wurde **nicht hinzugefügt**.")
 
