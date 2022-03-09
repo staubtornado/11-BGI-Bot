@@ -107,7 +107,7 @@ class Geburtstage(Cog):
                             continue
                         if not user.bot:
                             try:
-                                await user.send(f"🥳 {bd_user.mention} hat **in 3 Tagen Geburtstag**!")
+                                await user.send(f"🥳 **{bd_user}** hat **in 3 Tagen Geburtstag**!")
                             except Forbidden:
                                 continue
                 elif days == 0:
@@ -116,7 +116,7 @@ class Geburtstage(Cog):
                             continue
                         if not user.bot:
                             try:
-                                await user.send(f"🥳 {bd_user.mention} hat **morgen Geburtstag**!")
+                                await user.send(f"🥳 **{bd_user}** hat **morgen Geburtstag**!")
                             except Forbidden:
                                 continue
         self.start = False
