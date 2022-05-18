@@ -207,9 +207,7 @@ class Spiele(commands.Cog):
                                   .add_field(name='Verspätungen Ø',
                                              value=f'{round(verpasster_unterricht / len(alle_verspaetungen), 2)} Minuten')
                                   .add_field(name='Verpasste Unterrichtszeit', value=f'{verpasster_unterricht} Min ({round(verpasster_unterricht / 45, 2)} Std.)')
-                                  .set_thumbnail(url='https://media.discordapp.net/attachments/883364257364844615'
-                                                     '/903957644472123402/PXL_20211029_093552263_2.jpg?width=550'
-                                                     '&height=671')
+                                  .set_thumbnail(url='https://media.discordapp.net/attachments/883364257364844615/976365844399521792/WIN_20220517_14_15_06_Pro_-_Kopie.jpg')
                                   )
 
     @function_antonio.command(name='add')
